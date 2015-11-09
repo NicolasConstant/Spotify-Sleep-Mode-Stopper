@@ -85,7 +85,7 @@ namespace SpotifyTools.Tools
                 // Set up the diagnostic string
                 _powerRequestContext.Version = PowerRequestContextVersion;
                 _powerRequestContext.Flags = PowerRequestContextSimpleString;
-                _powerRequestContext.SimpleReasonString = "Continuous measurement";
+                _powerRequestContext.SimpleReasonString = "Playing music";
                 // your reason for changing the power settings;
 
                 // Create the request, get a handle

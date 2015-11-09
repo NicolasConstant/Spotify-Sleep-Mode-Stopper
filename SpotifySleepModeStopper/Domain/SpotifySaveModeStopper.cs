@@ -93,7 +93,8 @@ namespace SpotifyTools.Domain
 
         private bool IsSoundStreaming()
         {
-            var isSpotifyPlaying = _soundAnalyser.IsProcessNameOutputingSound(SpotifyProcessName);
+            //var isSpotifyPlaying = _soundAnalyser.IsProcessNameOutputingSound(SpotifyProcessName);
+            var isSpotifyPlaying = _soundAnalyser.IsWindowsOutputingSound();
             return isSpotifyPlaying;
         }
     }

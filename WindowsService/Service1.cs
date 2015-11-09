@@ -19,7 +19,7 @@ namespace PreventSpotifyInterruptionService
         public Service1()
         {
             InitializeComponent();
-            _spotifyAnalyser = new SpotifySaveModeStopper(new DummyMessageDisplayer(), new PreventSleepScreen(), new SoundAnalyser());
+            _spotifyAnalyser = new SpotifySaveModeStopper(new DummyMessageDisplayer(), new PreventSleepScreen(), new NAudioSoundAnalyser());
         }
 
         protected override void OnStart(string[] args)
