@@ -2,9 +2,9 @@
 using System.Runtime.InteropServices;
 using SpotifyTools.Contracts;
 
-namespace SpotifyTools.Tools
+namespace SpotifyTools.Domain.PowerManagement
 {
-    public class PreventSleepScreen : IPreventSleepScreen
+    public class PowerRequestContextHandler : IPreventSleepScreen
     {
         #region prevent screensaver, display dimming and automatically sleeping
         PowerRequestContext _powerRequestContext;
@@ -74,6 +74,9 @@ namespace SpotifyTools.Tools
         }
         #endregion
         
+        [DllImport("kernel32.dll")]
+        static extern uint GetLastError();
+
         /// <summary>
         /// Prevent screensaver, display dimming and power saving. This function wraps PInvokes on Win32 API. 
         /// </summary>
@@ -92,8 +95,8 @@ namespace SpotifyTools.Tools
                 _powerRequest = PowerCreateRequest(ref _powerRequestContext);
 
                 // Set the request
-                PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestSystemRequired);
-                PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestDisplayRequired);
+                var s = PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestSystemRequired);
+                var s2 = PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestDisplayRequired);
             }
             else
             {
@@ -104,5 +107,28 @@ namespace SpotifyTools.Tools
                 CloseHandle(_powerRequest);
             }
         }
+
+        //[DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        //internal static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+
+        //[DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        //internal static extern IntPtr LoadLibrary(string dllToLoad);
+
+        //private static bool PowerAvailabilityRequestsSupported()
+        //{
+        //    var ptr = LoadLibrary("kernel32.dll");
+        //    var ptr2 = GetProcAddress(ptr, "PowerSetRequest");
+
+        //    if (ptr2 == IntPtr.Zero)
+        //    {
+        //        // Power availability requests NOT suppoted.              
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        // Power availability requests ARE suppoted.                
+        //        return true;
+        //    }
+        //}
     }
 }

@@ -8,6 +8,9 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using SpotifyTools.Domain;
+using SpotifyTools.Domain.AudioManagement;
+using SpotifyTools.Domain.MessageManagement;
+using SpotifyTools.Domain.PowerManagement;
 using SpotifyTools.Tools;
 
 namespace PreventSpotifyInterruptionService
@@ -19,7 +22,7 @@ namespace PreventSpotifyInterruptionService
         public Service1()
         {
             InitializeComponent();
-            _spotifyAnalyser = new SpotifySaveModeStopper(new DummyMessageDisplayer(), new PreventSleepScreen(), new NAudioSoundAnalyser());
+            _spotifyAnalyser = new SpotifySaveModeStopper(new DummyMessageDisplayer(), new PowerRequestContextHandler(), new NAudioSoundAnalyser());
         }
 
         protected override void OnStart(string[] args)

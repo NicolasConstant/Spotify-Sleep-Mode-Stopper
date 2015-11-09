@@ -3,9 +3,9 @@ using System.Diagnostics;
 using CSCore.CoreAudioAPI;
 using SpotifyTools.Contracts;
 
-namespace SpotifyTools.Tools
+namespace SpotifyTools.Domain.AudioManagement
 {
-    public class SoundAnalyser : ISoundAnalyser
+    public class CsCoreSoundAnalyser : ISoundAnalyser
     {
         public bool IsWindowsOutputingSound()
         {

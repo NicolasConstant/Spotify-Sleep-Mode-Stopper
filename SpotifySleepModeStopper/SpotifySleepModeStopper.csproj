@@ -51,17 +51,20 @@
     <Compile Include="Contracts\IMessageDisplayer.cs" />
     <Compile Include="Contracts\IPreventSleepScreen.cs" />
     <Compile Include="Contracts\ISoundAnalyser.cs" />
+    <Compile Include="Tools\Repeat.cs" />
     <Compile Include="Domain\SpotifySaveModeStopper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tools\ConstantDisplayAndPowerHandler.cs" />
-    <Compile Include="Tools\DummyMessageDisplayer.cs" />
-    <Compile Include="Tools\MessageDisplayer.cs" />
-    <Compile Include="Tools\NAudioSoundAnalyser.cs" />
-    <Compile Include="Tools\SoundAnalyser.cs" />
+    <Compile Include="Domain\PowerManagement\PowerRequestContextHandler.cs" />
+    <Compile Include="Domain\MessageManagement\DummyMessageDisplayer.cs" />
+    <Compile Include="Domain\MessageManagement\MessageDisplayer.cs" />
+    <Compile Include="Domain\AudioManagement\NAudioSoundAnalyser.cs" />
+    <Compile Include="Domain\PowerManagement\SetThreadExecutionStateHandler.cs" />
+    <Compile Include="Domain\AudioManagement\CsCoreSoundAnalyser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

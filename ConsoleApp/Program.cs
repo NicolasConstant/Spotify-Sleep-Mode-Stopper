@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SpotifyTools.Domain;
+using SpotifyTools.Domain.AudioManagement;
+using SpotifyTools.Domain.MessageManagement;
+using SpotifyTools.Domain.PowerManagement;
 using SpotifyTools.Tools;
 
 namespace PreventSleep
@@ -12,14 +15,11 @@ namespace PreventSleep
     {
         static void Main(string[] args)
         {
-            var spotifyAnalyser = new SpotifySaveModeStopper(new MessageDisplayer(), new PreventSleepScreen(), new SoundAnalyser());
+            var spotifyAnalyser = new SpotifySaveModeStopper(new MessageDisplayer(), new PowerRequestContextHandler(), new CsCoreSoundAnalyser());
             spotifyAnalyser.StartListening();
-
-            while (true)
-                Task.Delay(3000).Wait();
-
-
-
+            
+            Console.ReadKey();
+            
             //var preventer = new PreventSleepScreen();
             //while (true)
             //{

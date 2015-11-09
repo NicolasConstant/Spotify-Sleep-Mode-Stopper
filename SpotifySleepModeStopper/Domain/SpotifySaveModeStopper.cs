@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SpotifyTools.Contracts;
+using SpotifyTools.Tools;
 
 namespace SpotifyTools.Domain
 {
@@ -34,7 +35,7 @@ namespace SpotifyTools.Domain
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
             _analyst = Repeat.Interval(
-                    TimeSpan.FromSeconds(60),
+                    TimeSpan.FromSeconds(10),
                     AnalyseSpotifyStatus, _cancellationTokenSource.Token);
         }
 
@@ -96,29 +97,6 @@ namespace SpotifyTools.Domain
             //var isSpotifyPlaying = _soundAnalyser.IsProcessNameOutputingSound(SpotifyProcessName);
             var isSpotifyPlaying = _soundAnalyser.IsWindowsOutputingSound();
             return isSpotifyPlaying;
-        }
-    }
-
-    internal static class Repeat
-    {
-        public static Task Interval(
-            TimeSpan pollInterval,
-            Action action,
-            CancellationToken token)
-        {
-            // We don't use Observable.Interval:
-            // If we block, the values start bunching up behind each other.
-            return Task.Factory.StartNew(
-                () =>
-                {
-                    for (;;)
-                    {
-                        if (token.WaitHandle.WaitOne(pollInterval))
-                            break;
-
-                        action();
-                    }
-                }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
     }
 }

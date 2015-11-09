@@ -1,7 +1,7 @@
 ﻿using System;
 using SpotifyTools.Contracts;
 
-namespace SpotifyTools.Tools
+namespace SpotifyTools.Domain.MessageManagement
 {
     public class MessageDisplayer : IMessageDisplayer
     {
