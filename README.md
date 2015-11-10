@@ -6,16 +6,16 @@ Spotify desktop app doesn't turn off Windows sleep mode, as a result when you're
 
 ## Motivation
 
-I wanted to stop this behavior as the Spotify devs doesn't handle this functionality  asked for years by users (even if multiple tickets are posted in their Ideas Community Website).
+I wanted to stop this behavior as the Spotify devs doesn't handle this functionality asked for years by users (even if multiple tickets are posted in their Ideas Community Website).
 
-Here is a console and windows service apps that will analyze if Spotify is running and playing music, if so, it will prevent Windows to sleep.
+Here is an app that will analyze if Spotify is running and playing music, if so, it will prevent Windows from sleeping.
 
 ## Installation
 
-The best is to build and install the Windows Service. 
+Windows installer here:
+https://github.com/NicolasConstant/Spotify-Sleep-Mode-Stopper/releases/download/1.1/SpotifySleepModeStopper_v1.1.msi
 
-You can also find a Windows installer (x64 only for now) here:
-https://github.com/NicolasConstant/Spotify-Sleep-Mode-Stopper/releases/download/1.0/SpotifySleepModeStopper.exe
+Once installed, just launch the app, it will automatically check the Spotify status.
 
 ## Libraries used
 

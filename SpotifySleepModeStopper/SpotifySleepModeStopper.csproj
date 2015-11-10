@@ -34,10 +34,6 @@
       <HintPath>..\packages\CSCore.1.0.0.0\lib\net35-client\CSCore.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -57,8 +53,6 @@
     <Compile Include="Domain\PowerManagement\PowerRequestContextHandler.cs" />
     <Compile Include="Domain\MessageManagement\DummyMessageDisplayer.cs" />
     <Compile Include="Domain\MessageManagement\MessageDisplayer.cs" />
-    <Compile Include="Domain\AudioManagement\NAudioSoundAnalyser.cs" />
-    <Compile Include="Domain\PowerManagement\SetThreadExecutionStateHandler.cs" />
     <Compile Include="Domain\AudioManagement\CsCoreSoundAnalyser.cs" />
   </ItemGroup>
   <ItemGroup>
