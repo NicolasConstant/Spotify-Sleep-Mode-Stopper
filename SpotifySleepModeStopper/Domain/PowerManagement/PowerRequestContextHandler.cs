@@ -95,8 +95,8 @@ namespace SpotifyTools.Domain.PowerManagement
                 _powerRequest = PowerCreateRequest(ref _powerRequestContext);
 
                 // Set the request
-                var s = PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestSystemRequired);
-                var s2 = PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestDisplayRequired);
+                PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestSystemRequired);
+                PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestDisplayRequired);
             }
             else
             {
@@ -107,28 +107,5 @@ namespace SpotifyTools.Domain.PowerManagement
                 CloseHandle(_powerRequest);
             }
         }
-
-        //[DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
-        //internal static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
-
-        //[DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-        //internal static extern IntPtr LoadLibrary(string dllToLoad);
-
-        //private static bool PowerAvailabilityRequestsSupported()
-        //{
-        //    var ptr = LoadLibrary("kernel32.dll");
-        //    var ptr2 = GetProcAddress(ptr, "PowerSetRequest");
-
-        //    if (ptr2 == IntPtr.Zero)
-        //    {
-        //        // Power availability requests NOT suppoted.              
-        //        return false;
-        //    }
-        //    else
-        //    {
-        //        // Power availability requests ARE suppoted.                
-        //        return true;
-        //    }
-        //}
     }
 }

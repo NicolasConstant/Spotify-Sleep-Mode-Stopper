@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifySleepModeStopperCons
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifySleepModeStopperService", "WindowsService\SpotifySleepModeStopperService.csproj", "{23717C35-642B-41D5-882B-460083C1E376}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifySleepModeStopperGui", "SpotifySleepModeStopperGui\SpotifySleepModeStopperGui.csproj", "{8C0977F4-070D-4B83-A825-EDDECD812C36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{23717C35-642B-41D5-882B-460083C1E376}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23717C35-642B-41D5-882B-460083C1E376}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23717C35-642B-41D5-882B-460083C1E376}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C0977F4-070D-4B83-A825-EDDECD812C36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C0977F4-070D-4B83-A825-EDDECD812C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C0977F4-070D-4B83-A825-EDDECD812C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C0977F4-070D-4B83-A825-EDDECD812C36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,5 +47,6 @@ Global
 		{0EFA9F55-FD0A-4B27-B953-4B6F5213A7B5} = {3D8B40CA-FF63-47A7-B987-16C32BABDA81}
 		{ECEFE84A-5AB9-460C-9937-AA18C20674A2} = {EA773A42-7CE2-4520-936D-4B76A417252D}
 		{23717C35-642B-41D5-882B-460083C1E376} = {A18AF2DC-D0FB-4CA4-AB24-07EA9826EF48}
+		{8C0977F4-070D-4B83-A825-EDDECD812C36} = {EA773A42-7CE2-4520-936D-4B76A417252D}
 	EndGlobalSection
 EndGlobal
