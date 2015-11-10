@@ -35,7 +35,7 @@ namespace SpotifyTools.Domain
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
             _analyst = Repeat.Interval(
-                    TimeSpan.FromSeconds(10),
+                    TimeSpan.FromSeconds(30),
                     AnalyseSpotifyStatus, _cancellationTokenSource.Token);
         }
 
