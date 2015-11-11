@@ -21,11 +21,11 @@ namespace SpotifySleepModeStopperGui
 
         public void OutputMessage(string mess)
         {
-            if (mess == "Spotify Playing: True")
+            if (mess == "SleepModeEnabled")
             {
                 _notifyIsPlaying();
             }
-            else
+            else if (mess == "SleepModeDisabled")
             {
                 _notifyIsNotPlaying();
             }

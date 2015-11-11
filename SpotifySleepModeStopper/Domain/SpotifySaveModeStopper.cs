@@ -76,9 +76,15 @@ namespace SpotifyTools.Domain
                 if (stateHasChanged)
                 {
                     if (_spotifyRunning && _spotifyPlaying)
+                    {
+                        _messageDisplayer.OutputMessage("SleepModeEnabled");
                         _preventSleepScreen.EnableConstantDisplayAndPower(true);
+                    }
                     else
+                    {
+                        _messageDisplayer.OutputMessage("SleepModeDisabled");
                         _preventSleepScreen.EnableConstantDisplayAndPower(false);
+                    }
                 }
             }
             catch (Exception e)

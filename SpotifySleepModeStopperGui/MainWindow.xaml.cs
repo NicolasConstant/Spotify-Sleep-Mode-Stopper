@@ -15,10 +15,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using SpotifyTools.Domain;
 using SpotifyTools.Domain.AudioManagement;
 using SpotifyTools.Domain.MessageManagement;
 using SpotifyTools.Domain.PowerManagement;
+using Application = System.Windows.Application;
 
 namespace SpotifySleepModeStopperGui
 {
@@ -76,19 +78,29 @@ namespace SpotifySleepModeStopperGui
         private void exit_Click(object sender, EventArgs e)
         {
             _analyser.StopListening();
+
+            _notifyIcon.Visible = false;
+            _notifyIcon.Dispose();
+
             Environment.Exit(0);
         }
 
         private void SetNotPlaying()
         {
-            _notifyIcon.Icon = _notPlayingIcon;
-            _notifyIcon.Text = "Spotify isn't playing";
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                _notifyIcon.Icon = _notPlayingIcon;
+                _notifyIcon.Text = "Spotify isn't playing";
+            }));
         }
 
         private void SetPlaying()
         {
-            _notifyIcon.Icon = _playingIcon;
-            _notifyIcon.Text = "Spotify is playing";
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                _notifyIcon.Icon = _playingIcon;
+                _notifyIcon.Text = "Spotify is playing";
+            }));
         }
     }
 }
