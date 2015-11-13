@@ -23,6 +23,12 @@ namespace SpotifyTools.Domain
         private CancellationTokenSource _cancellationTokenSource;
         private Task _analyst;
 
+#if DEBUG
+        TimeSpan _checkInterval = TimeSpan.FromSeconds(5);
+#else
+        TimeSpan _checkInterval = TimeSpan.FromSeconds(20);
+#endif
+
         public SpotifySaveModeStopper(IMessageDisplayer messageDisplayer, IPreventSleepScreen preventSleepScreen, ISoundAnalyser soundAnalyser, IAppStatusReporting appState1)
         {
             _messageDisplayer = messageDisplayer;
@@ -37,7 +43,7 @@ namespace SpotifyTools.Domain
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
             _analyst = Repeat.Interval(
-                    TimeSpan.FromSeconds(30),
+                    _checkInterval,
                     AnalyseSpotifyStatus, _cancellationTokenSource.Token);
         }
 

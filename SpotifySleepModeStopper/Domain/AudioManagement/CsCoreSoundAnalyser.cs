@@ -36,7 +36,7 @@ namespace SpotifyTools.Domain.AudioManagement
                             }
 
                             var peakValue = Math.Abs(audioMeterInformation.GetPeakValue());
-                            if (peakValue >= 5E-10) return true;
+                            if (peakValue > 6E-9) return true;
                         }
                     }
                 }

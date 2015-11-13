@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using SpotifyTools.Domain;
 using SpotifyTools.Domain.AppStatesManagement;
@@ -39,30 +28,29 @@ namespace SpotifySleepModeStopperGui
         {
             InitializeComponent();
 
+            #region Events Subscription
+            Closing += OnClosing;
+            #endregion
+
             #region Init Tray Icon
             WindowState = WindowState.Minimized;
             Visibility = Visibility.Hidden;
             ShowInTaskbar = false;
 
             _notifyIcon = new NotifyIcon();
-            using (
-                var stream =
-                    Assembly.GetExecutingAssembly().GetManifestResourceStream("SpotifySleepModeStopperGui.music.ico"))
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SpotifySleepModeStopperGui.music.ico"))
             {
                 _notPlayingIcon = new Icon(stream);
             }
-            using (
-                var stream =
-                    Assembly.GetExecutingAssembly()
-                        .GetManifestResourceStream("SpotifySleepModeStopperGui.music_playing.ico"))
+            using ( var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SpotifySleepModeStopperGui.music_playing.ico"))
             {
                 _playingIcon = new Icon(stream);
             }
             SetNotPlaying();
             _notifyIcon.Visible = true;
 
-            var contextMenu = new System.Windows.Forms.ContextMenu();
-            var menuItem = new System.Windows.Forms.MenuItem();
+            var contextMenu = new ContextMenu();
+            var menuItem = new MenuItem();
 
             contextMenu.MenuItems.AddRange(new[] { menuItem });
             menuItem.Index = 0;
@@ -76,14 +64,19 @@ namespace SpotifySleepModeStopperGui
             _analyser.StartListening();
         }
 
-        private void exit_Click(object sender, EventArgs e)
+        private void OnClosing(object sender, CancelEventArgs e)
         {
             _analyser.StopListening();
 
             _notifyIcon.Visible = false;
             _notifyIcon.Dispose();
 
-            Environment.Exit(0);
+            //Environment.Exit(0);
+        }
+
+        private void exit_Click(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
         }
 
         private void SetNotPlaying()
