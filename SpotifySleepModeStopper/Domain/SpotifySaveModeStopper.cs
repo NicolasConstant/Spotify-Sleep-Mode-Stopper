@@ -15,6 +15,7 @@ namespace SpotifyTools.Domain
         private readonly IMessageDisplayer _messageDisplayer;
         private readonly IPreventSleepScreen _preventSleepScreen;
         private readonly ISoundAnalyser _soundAnalyser;
+        private readonly IAppStatusReporting _appState;
 
         private bool _spotifyRunning;
         private bool _spotifyPlaying;
@@ -22,11 +23,12 @@ namespace SpotifyTools.Domain
         private CancellationTokenSource _cancellationTokenSource;
         private Task _analyst;
 
-        public SpotifySaveModeStopper(IMessageDisplayer messageDisplayer, IPreventSleepScreen preventSleepScreen, ISoundAnalyser soundAnalyser)
+        public SpotifySaveModeStopper(IMessageDisplayer messageDisplayer, IPreventSleepScreen preventSleepScreen, ISoundAnalyser soundAnalyser, IAppStatusReporting appState1)
         {
             _messageDisplayer = messageDisplayer;
             _preventSleepScreen = preventSleepScreen;
             _soundAnalyser = soundAnalyser;
+            _appState = appState1;
         }
 
         public void StartListening()
@@ -77,12 +79,16 @@ namespace SpotifyTools.Domain
                 {
                     if (_spotifyRunning && _spotifyPlaying)
                     {
-                        _messageDisplayer.OutputMessage("SleepModeEnabled");
+                        _messageDisplayer.OutputMessage("Anti Sleep Mode is Enabled");
+                        _appState.NotifyAntiSleepingModeIsActivated();
+
                         _preventSleepScreen.EnableConstantDisplayAndPower(true);
                     }
                     else
                     {
-                        _messageDisplayer.OutputMessage("SleepModeDisabled");
+                        _messageDisplayer.OutputMessage("Anti Sleep Mode is Disabled");
+                        _appState.NotifyAntiSleepingModeIsDisabled();
+
                         _preventSleepScreen.EnableConstantDisplayAndPower(false);
                     }
                 }

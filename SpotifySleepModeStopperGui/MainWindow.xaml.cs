@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using SpotifyTools.Domain;
+using SpotifyTools.Domain.AppStatesManagement;
 using SpotifyTools.Domain.AudioManagement;
 using SpotifyTools.Domain.MessageManagement;
 using SpotifyTools.Domain.PowerManagement;
@@ -70,8 +71,8 @@ namespace SpotifySleepModeStopperGui
             _notifyIcon.ContextMenu = contextMenu;
             #endregion
 
-            var iconChanger = new IconChanger(SetPlaying, SetNotPlaying);
-            _analyser = new SpotifySaveModeStopper(iconChanger, new PowerRequestContextHandler(), new CsCoreSoundAnalyser());
+            var iconChanger = new AppStateReporting(SetPlaying, SetNotPlaying);
+            _analyser = new SpotifySaveModeStopper(new DummyMessageDisplayer(), new PowerRequestContextHandler(), new CsCoreSoundAnalyser(), iconChanger);
             _analyser.StartListening();
         }
 
