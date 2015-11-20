@@ -7,6 +7,15 @@ namespace SpotifyTools.Domain.AudioManagement
 {
     public class CsCoreSoundAnalyser : ISoundAnalyser
     {
+        private readonly IMessageDisplayer _messageDisplayer;
+
+        #region Ctor
+        public CsCoreSoundAnalyser(IMessageDisplayer messageDisplayer1)
+        {
+            _messageDisplayer = messageDisplayer1;
+        }
+        #endregion
+
         public bool IsWindowsOutputingSound()
         {
             return IsOutputingSound();
@@ -25,18 +34,25 @@ namespace SpotifyTools.Domain.AudioManagement
                 {
                     foreach (var session in sessionEnumerator)
                     {
-                        using (var audioMeterInformation = session.QueryInterface<AudioMeterInformation>())
-                        using (var session2 = session.QueryInterface<AudioSessionControl2>())
+                        try
                         {
-                            if (limitToProcess != null)
+                            using (var audioMeterInformation = session.QueryInterface<AudioMeterInformation>())
+                            using (var session2 = session.QueryInterface<AudioSessionControl2>())
                             {
-                                var processId = session2.ProcessID;
-                                var name = Process.GetProcessById(processId).ProcessName;
-                                if (name != limitToProcess) continue;
-                            }
+                                if (limitToProcess != null)
+                                {
+                                    var processId = session2.ProcessID;
+                                    var name = Process.GetProcessById(processId).ProcessName;
+                                    if (name != limitToProcess) continue;
+                                }
 
-                            var peakValue = Math.Abs(audioMeterInformation.GetPeakValue());
-                            if (peakValue > 6E-9) return true;
+                                var peakValue = Math.Abs(audioMeterInformation.GetPeakValue());
+                                if (peakValue > 6E-9) return true;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            _messageDisplayer.OutputMessage("Exception: " + e.Message + " at "+ e.StackTrace);
                         }
                     }
                 }

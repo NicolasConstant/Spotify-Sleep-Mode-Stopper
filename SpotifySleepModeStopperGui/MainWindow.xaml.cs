@@ -58,9 +58,15 @@ namespace SpotifySleepModeStopperGui
             menuItem.Click += exit_Click;
             _notifyIcon.ContextMenu = contextMenu;
             #endregion
-
+            
+            #region Poor Man DI
             var iconChanger = new AppStateReporting(SetPlaying, SetNotPlaying);
-            _analyser = new SpotifySaveModeStopper(new DummyMessageDisplayer(), new PowerRequestContextHandler(), new CsCoreSoundAnalyser(), iconChanger);
+            var messageDisplayer = new DummyMessageDisplayer();
+            var powerHandler = new PowerRequestContextHandler();
+            var soundAnalyser = new CsCoreSoundAnalyser(messageDisplayer);
+            #endregion
+
+            _analyser = new SpotifySaveModeStopper(messageDisplayer, powerHandler, soundAnalyser, iconChanger);
             _analyser.StartListening();
         }
 
