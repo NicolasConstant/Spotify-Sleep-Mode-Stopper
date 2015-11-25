@@ -11,6 +11,8 @@ using SpotifyTools.Domain.AudioManagement;
 using SpotifyTools.Domain.MessageManagement;
 using SpotifyTools.Domain.PowerManagement;
 using Application = System.Windows.Application;
+using Microsoft.Win32;
+using SpotifyTools.Tools;
 
 namespace SpotifySleepModeStopperGui
 {
@@ -23,10 +25,20 @@ namespace SpotifySleepModeStopperGui
         private readonly Icon _notPlayingIcon;
         private readonly Icon _playingIcon;
         private readonly SpotifySaveModeStopper _analyser;
+        private readonly AutoStartManager _autoStartManager;
+
+        private const string AppStartingOnStartupMess = "Auto-Start: On";
+        private const string AppNotStartingOnStartupMess = "Auto-Start: Off";
+
+        private MenuItem _autoStartMenuItem;
+        private string _mess;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            var fullPath = Assembly.GetExecutingAssembly().Location;
+            _autoStartManager = new AutoStartManager("SpotifySleepModeStopper", fullPath);
 
             #region Events Subscription
             Closing += OnClosing;
@@ -42,7 +54,7 @@ namespace SpotifySleepModeStopperGui
             {
                 _notPlayingIcon = new Icon(stream);
             }
-            using ( var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SpotifySleepModeStopperGui.music_playing.ico"))
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SpotifySleepModeStopperGui.music_playing.ico"))
             {
                 _playingIcon = new Icon(stream);
             }
@@ -50,15 +62,25 @@ namespace SpotifySleepModeStopperGui
             _notifyIcon.Visible = true;
 
             var contextMenu = new ContextMenu();
-            var menuItem = new MenuItem();
+            var exitMenuItem = new MenuItem();
+            exitMenuItem.Index = 1;
+            exitMenuItem.Text = "Exit";
+            exitMenuItem.Click += exit_Click;
 
-            contextMenu.MenuItems.AddRange(new[] { menuItem });
-            menuItem.Index = 0;
-            menuItem.Text = "Exit";
-            menuItem.Click += exit_Click;
+            _autoStartMenuItem = new MenuItem();
+            _autoStartMenuItem.Index = 0;
+
+            if (_autoStartManager.IsAutoStartSet())
+                _autoStartMenuItem.Text = AppStartingOnStartupMess; //"Auto Startup";
+            else
+                _autoStartMenuItem.Text = AppNotStartingOnStartupMess;
+
+            _autoStartMenuItem.Click += changeAutoStart_Click;
+
+            contextMenu.MenuItems.AddRange(new[] { _autoStartMenuItem, exitMenuItem });
             _notifyIcon.ContextMenu = contextMenu;
             #endregion
-            
+
             #region Poor Man DI
             var iconChanger = new AppStateReporting(SetPlaying, SetNotPlaying);
             var messageDisplayer = new DummyMessageDisplayer();
@@ -68,6 +90,18 @@ namespace SpotifySleepModeStopperGui
 
             _analyser = new SpotifySaveModeStopper(messageDisplayer, powerHandler, soundAnalyser, iconChanger);
             _analyser.StartListening();
+        }
+
+        private void changeAutoStart_Click(object sender, EventArgs e)
+        {
+            var isSet = _autoStartManager.IsAutoStartSet();
+
+            if (!_autoStartManager.IsAutoStartSet())
+                _autoStartMenuItem.Text = AppStartingOnStartupMess;
+            else
+                _autoStartMenuItem.Text = AppNotStartingOnStartupMess;
+
+            _autoStartManager.SetAutoStart(!isSet);
         }
 
         private void OnClosing(object sender, CancelEventArgs e)
@@ -84,6 +118,8 @@ namespace SpotifySleepModeStopperGui
         {
             Application.Current.Shutdown();
         }
+
+
 
         private void SetNotPlaying()
         {

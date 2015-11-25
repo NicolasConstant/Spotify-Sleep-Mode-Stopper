@@ -49,6 +49,7 @@
     <Compile Include="Contracts\IPreventSleepScreen.cs" />
     <Compile Include="Contracts\ISoundAnalyser.cs" />
     <Compile Include="Domain\AppStatesManagement\AppStateReporting.cs" />
+    <Compile Include="Tools\AutoStartManager.cs" />
     <Compile Include="Tools\Repeat.cs" />
     <Compile Include="Domain\SpotifySaveModeStopper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
