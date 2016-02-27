@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using SpotifyTools.Contracts;
 
-namespace SpotifyTools.Domain.PowerManagement
+namespace SpotifyTools.DomainLayer.PowerManagement
 {
     public class PowerRequestContextHandler : IPreventSleepScreen
     {

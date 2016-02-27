@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using SpotifyTools.Contracts;
 using SpotifyTools.Tools;
 
-namespace SpotifyTools.Domain
+namespace SpotifyTools
 {
-    public class SpotifySaveModeStopper
+    public class SpotifySaveModeStopperFacade : ISpotifySaveModeStopperFacade
     {
         private const string SpotifyProcessName = "Spotify";
 
@@ -16,6 +16,8 @@ namespace SpotifyTools.Domain
         private readonly IPreventSleepScreen _preventSleepScreen;
         private readonly ISoundAnalyser _soundAnalyser;
         private readonly IAppStatusReporting _appState;
+        private readonly IAutoStartManager _autoStartManager;
+        private readonly ISettingsManager _settingsManager;
 
         private bool _spotifyRunning;
         private bool _spotifyPlaying;
@@ -29,12 +31,43 @@ namespace SpotifyTools.Domain
         TimeSpan _checkInterval = TimeSpan.FromSeconds(20);
 #endif
 
-        public SpotifySaveModeStopper(IMessageDisplayer messageDisplayer, IPreventSleepScreen preventSleepScreen, ISoundAnalyser soundAnalyser, IAppStatusReporting appState1)
+        #region Ctor
+        public SpotifySaveModeStopperFacade(IMessageDisplayer messageDisplayer, IPreventSleepScreen preventSleepScreen,
+            ISoundAnalyser soundAnalyser, IAppStatusReporting appState, IAutoStartManager autoStartManager, ISettingsManager settingsManager)
         {
             _messageDisplayer = messageDisplayer;
             _preventSleepScreen = preventSleepScreen;
             _soundAnalyser = soundAnalyser;
-            _appState = appState1;
+            _appState = appState;
+            _autoStartManager = autoStartManager;
+            _settingsManager = settingsManager;
+        }
+        #endregion
+
+        public void ChangeScreenSleep(bool screenRemainsEnabled)
+        {
+            //
+
+            //Save new settings
+            var settings = _settingsManager.GetConfig();
+            settings.IsScreenSleepEnabled = screenRemainsEnabled;
+            _settingsManager.SaveConfig(settings);
+        }
+
+        public void ChangeAutoStart(bool autoStartEnabled)
+        {
+            _autoStartManager.SetAutoStart(autoStartEnabled);
+        }
+
+        public bool IsScreenSleepEnabled()
+        {
+            var settings = _settingsManager.GetConfig();
+            return settings.IsScreenSleepEnabled;
+        }
+
+        public bool IsAutoStartEnabled()
+        {
+            return _autoStartManager.IsAutoStartSet();
         }
 
         public void StartListening()
@@ -113,7 +146,6 @@ namespace SpotifyTools.Domain
         private bool IsSoundStreaming()
         {
             var isSpotifyPlaying = _soundAnalyser.IsProcessNameOutputingSound(SpotifyProcessName);
-            //var isSpotifyPlaying = _soundAnalyser.IsWindowsOutputingSound();
             return isSpotifyPlaying;
         }
     }

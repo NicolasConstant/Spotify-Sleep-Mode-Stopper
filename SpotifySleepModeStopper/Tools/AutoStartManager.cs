@@ -1,9 +1,10 @@
 ﻿using System.Reflection;
 using Microsoft.Win32;
+using SpotifyTools.Contracts;
 
 namespace SpotifyTools.Tools
 {
-    public class AutoStartManager
+    public class AutoStartManager : IAutoStartManager
     {
         private readonly RegistryKey _rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
         private readonly string _appName;

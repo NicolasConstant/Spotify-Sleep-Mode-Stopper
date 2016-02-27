@@ -3,7 +3,7 @@ using System.Diagnostics;
 using CSCore.CoreAudioAPI;
 using SpotifyTools.Contracts;
 
-namespace SpotifyTools.Domain.AudioManagement
+namespace SpotifyTools.DomainLayer.AudioManagement
 {
     public class CsCoreSoundAnalyser : ISoundAnalyser
     {
