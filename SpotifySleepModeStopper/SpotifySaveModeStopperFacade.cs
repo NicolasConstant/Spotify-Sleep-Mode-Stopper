@@ -21,6 +21,9 @@ namespace SpotifyTools
 
         private bool _spotifyRunning;
         private bool _spotifyPlaying;
+        private bool _screenSleepEnabled;
+
+        private bool _appStateHasChanged = false;
 
         private CancellationTokenSource _cancellationTokenSource;
         private Task _analyst;
@@ -41,16 +44,22 @@ namespace SpotifyTools
             _appState = appState;
             _autoStartManager = autoStartManager;
             _settingsManager = settingsManager;
+
+            _screenSleepEnabled = IsScreenSleepEnabled();
         }
         #endregion
 
-        public void ChangeScreenSleep(bool screenRemainsEnabled)
+        public void ChangeScreenSleep(bool screenSleepEnabled)
         {
-            //
+            _screenSleepEnabled = screenSleepEnabled;
+
+            //If spotify already playing, change current sleep preventer 
+            if (_spotifyPlaying)
+                ResetListening();
 
             //Save new settings
             var settings = _settingsManager.GetConfig();
-            settings.IsScreenSleepEnabled = screenRemainsEnabled;
+            settings.IsScreenSleepEnabled = screenSleepEnabled;
             _settingsManager.SaveConfig(settings);
         }
 
@@ -77,7 +86,8 @@ namespace SpotifyTools
             _cancellationTokenSource = new CancellationTokenSource();
             _analyst = Repeat.Interval(
                     _checkInterval,
-                    AnalyseSpotifyStatus, _cancellationTokenSource.Token);
+                    () => AnalyseSpotifyStatus(_cancellationTokenSource.Token), 
+                    _cancellationTokenSource.Token);
         }
 
         public void StopListening()
@@ -85,51 +95,65 @@ namespace SpotifyTools
             _messageDisplayer.OutputMessage("Stop listening");
             _cancellationTokenSource?.Cancel();
 
-            //Make sure sleep screen is enabled again
-            _preventSleepScreen.EnableConstantDisplayAndPower(false);
+            //Make sure sleep mode is enabled again
+            _preventSleepScreen.EnableConstantDisplayAndPower(false, false);
         }
 
-        private void AnalyseSpotifyStatus()
+        public void ResetListening()
+        {
+            _messageDisplayer.OutputMessage("Reset listening");
+
+            StopListening();
+            _appStateHasChanged = true;
+            StartListening();
+        }
+
+        private void AnalyseSpotifyStatus(CancellationToken token)
         {
             try
             {
-                var stateHasChanged = false;
-
-                var isSpotifyRunning = IsSpotifyRunning();
-                if (_spotifyRunning != isSpotifyRunning)
+                if (!_appStateHasChanged)
                 {
-                    stateHasChanged = true;
-                    _spotifyRunning = isSpotifyRunning;
-                    _messageDisplayer.OutputMessage("Spotify Running: " + _spotifyRunning);
-                }
-
-                if (_spotifyRunning)
-                {
-                    var isSpotifyPlaying = IsSoundStreaming();
-                    if (_spotifyPlaying != isSpotifyPlaying)
+                    var isSpotifyRunning = IsSpotifyRunning();
+                    if (_spotifyRunning != isSpotifyRunning)
                     {
-                        stateHasChanged = true;
-                        _spotifyPlaying = isSpotifyPlaying;
-                        _messageDisplayer.OutputMessage("Spotify Playing: " + _spotifyPlaying);
+                        _appStateHasChanged = true;
+                        _spotifyRunning = isSpotifyRunning;
+                        _messageDisplayer.OutputMessage("Spotify Running: " + _spotifyRunning);
+                    }
+
+                    if (_spotifyRunning)
+                    {
+                        var isSpotifyPlaying = IsSoundStreaming();
+                        if (_spotifyPlaying != isSpotifyPlaying)
+                        {
+                            _appStateHasChanged = true;
+                            _spotifyPlaying = isSpotifyPlaying;
+                            _messageDisplayer.OutputMessage("Spotify Playing: " + _spotifyPlaying);
+                        }
                     }
                 }
 
-                if (stateHasChanged)
+                if (_appStateHasChanged)
                 {
                     if (_spotifyRunning && _spotifyPlaying)
                     {
                         _messageDisplayer.OutputMessage("Anti Sleep Mode is Enabled");
                         _appState.NotifyAntiSleepingModeIsActivated();
 
-                        _preventSleepScreen.EnableConstantDisplayAndPower(true);
+                        token.ThrowIfCancellationRequested();
+                        _preventSleepScreen.EnableConstantDisplayAndPower(true, !_screenSleepEnabled);
                     }
                     else
                     {
                         _messageDisplayer.OutputMessage("Anti Sleep Mode is Disabled");
                         _appState.NotifyAntiSleepingModeIsDisabled();
 
-                        _preventSleepScreen.EnableConstantDisplayAndPower(false);
+                        token.ThrowIfCancellationRequested();
+                        _preventSleepScreen.EnableConstantDisplayAndPower(false, false);
                     }
+
+                    _appStateHasChanged = false;
                 }
             }
             catch (Exception e)
