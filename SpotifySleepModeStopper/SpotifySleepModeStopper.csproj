@@ -48,6 +48,7 @@
     <Compile Include="Contracts\IAppStateReporting.cs" />
     <Compile Include="Contracts\IMessageDisplayer.cs" />
     <Compile Include="Contracts\IPreventSleepScreen.cs" />
+    <Compile Include="Contracts\IProcessAnalyser.cs" />
     <Compile Include="Contracts\ISoundAnalyser.cs" />
     <Compile Include="DomainLayer\AppStatesManagement\AppStateReporting.cs" />
     <Compile Include="Contracts\ISpotifySaveModeStopperFacade.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Contracts\ISettingsManager.cs" />
     <Compile Include="Tools\JsonSerializerHelper.cs" />
     <Compile Include="Tools\Model\AppSettings.cs" />
+    <Compile Include="Tools\ProcessAnalyser.cs" />
     <Compile Include="Tools\Repeat.cs" />
     <Compile Include="SpotifySaveModeStopperFacade.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -18,6 +18,7 @@ namespace SpotifyTools
         private readonly IAppStatusReporting _appState;
         private readonly IAutoStartManager _autoStartManager;
         private readonly ISettingsManager _settingsManager;
+        private readonly IProcessAnalyser _processAnalyser;
 
         private bool _spotifyRunning;
         private bool _spotifyPlaying;
@@ -36,7 +37,7 @@ namespace SpotifyTools
 
         #region Ctor
         public SpotifySaveModeStopperFacade(IMessageDisplayer messageDisplayer, IPreventSleepScreen preventSleepScreen,
-            ISoundAnalyser soundAnalyser, IAppStatusReporting appState, IAutoStartManager autoStartManager, ISettingsManager settingsManager)
+            ISoundAnalyser soundAnalyser, IProcessAnalyser processAnalyser, IAppStatusReporting appState, IAutoStartManager autoStartManager, ISettingsManager settingsManager, int refreshRate = -1)
         {
             _messageDisplayer = messageDisplayer;
             _preventSleepScreen = preventSleepScreen;
@@ -44,8 +45,11 @@ namespace SpotifyTools
             _appState = appState;
             _autoStartManager = autoStartManager;
             _settingsManager = settingsManager;
+            _processAnalyser = processAnalyser;
 
             _screenSleepEnabled = IsScreenSleepEnabled();
+            if(refreshRate > 0)
+                _checkInterval = TimeSpan.FromSeconds(refreshRate);
         }
         #endregion
 
@@ -164,7 +168,8 @@ namespace SpotifyTools
 
         private bool IsSpotifyRunning()
         {
-            return Process.GetProcessesByName(SpotifyProcessName).Any();
+            var isSpotifyRunning = _processAnalyser.IsAppRunning(SpotifyProcessName);
+            return isSpotifyRunning;
         }
 
         private bool IsSoundStreaming()

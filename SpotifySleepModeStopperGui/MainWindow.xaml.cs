@@ -45,6 +45,7 @@ namespace SpotifySleepModeStopperGui
             var messageDisplayer = new DummyMessageDisplayer();
             var powerHandler = new PowerRequestContextHandler();
             var soundAnalyser = new CsCoreSoundAnalyser(messageDisplayer);
+            var processAnalyser = new ProcessAnalyser();
 
             var fullPath = Assembly.GetExecutingAssembly().Location;
             var autoStartManager = new AutoStartManager("SpotifySleepModeStopper", fullPath);
@@ -52,7 +53,7 @@ namespace SpotifySleepModeStopperGui
             var settingsManager = new SettingsManager("SpotifySleepModeStopper");
             #endregion
 
-            _facade = new SpotifySaveModeStopperFacade(messageDisplayer, powerHandler, soundAnalyser, iconChanger, autoStartManager, settingsManager);
+            _facade = new SpotifySaveModeStopperFacade(messageDisplayer, powerHandler, soundAnalyser, processAnalyser, iconChanger, autoStartManager, settingsManager);
 
             #region Events Subscription
             Closing += OnClosing;
