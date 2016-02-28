@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using SpotifyTools.Contracts;
 
-namespace SpotifyTools.Domain.PowerManagement
+namespace SpotifyTools.DomainLayer.PowerManagement
 {
     public class PowerRequestContextHandler : IPreventSleepScreen
     {
@@ -80,10 +80,11 @@ namespace SpotifyTools.Domain.PowerManagement
         /// <summary>
         /// Prevent screensaver, display dimming and power saving. This function wraps PInvokes on Win32 API. 
         /// </summary>
-        /// <param name="enableConstantDisplayAndPower">True to get a constant display and power - False to clear the settings</param>
-        public void EnableConstantDisplayAndPower(bool enableConstantDisplayAndPower)
+        /// <param name="enableConstantDisplay"></param>
+        /// <param name="enableConstantPower"></param>
+        public void EnableConstantDisplayAndPower(bool enableConstantPower, bool enableConstantDisplay)
         {
-            if (enableConstantDisplayAndPower)
+            if (enableConstantPower)
             {
                 // Set up the diagnostic string
                 _powerRequestContext.Version = PowerRequestContextVersion;
@@ -96,7 +97,9 @@ namespace SpotifyTools.Domain.PowerManagement
 
                 // Set the request
                 PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestSystemRequired);
-                PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestDisplayRequired);
+
+                if (enableConstantDisplay)
+                    PowerSetRequest(_powerRequest, PowerRequestType.PowerRequestDisplayRequired);
             }
             else
             {

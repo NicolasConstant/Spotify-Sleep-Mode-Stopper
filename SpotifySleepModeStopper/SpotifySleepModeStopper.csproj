@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,16 +48,24 @@
     <Compile Include="Contracts\IAppStateReporting.cs" />
     <Compile Include="Contracts\IMessageDisplayer.cs" />
     <Compile Include="Contracts\IPreventSleepScreen.cs" />
+    <Compile Include="Contracts\IProcessAnalyser.cs" />
     <Compile Include="Contracts\ISoundAnalyser.cs" />
-    <Compile Include="Domain\AppStatesManagement\AppStateReporting.cs" />
+    <Compile Include="DomainLayer\AppStatesManagement\AppStateReporting.cs" />
+    <Compile Include="Contracts\ISpotifySaveModeStopperFacade.cs" />
     <Compile Include="Tools\AutoStartManager.cs" />
+    <Compile Include="Contracts\IAutoStartManager.cs" />
+    <Compile Include="Contracts\ISettingsManager.cs" />
+    <Compile Include="Tools\JsonSerializerHelper.cs" />
+    <Compile Include="Tools\Model\AppSettings.cs" />
+    <Compile Include="Tools\ProcessAnalyser.cs" />
     <Compile Include="Tools\Repeat.cs" />
-    <Compile Include="Domain\SpotifySaveModeStopper.cs" />
+    <Compile Include="SpotifySaveModeStopperFacade.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Domain\PowerManagement\PowerRequestContextHandler.cs" />
-    <Compile Include="Domain\MessageManagement\DummyMessageDisplayer.cs" />
-    <Compile Include="Domain\MessageManagement\MessageDisplayer.cs" />
-    <Compile Include="Domain\AudioManagement\CsCoreSoundAnalyser.cs" />
+    <Compile Include="DomainLayer\PowerManagement\PowerRequestContextHandler.cs" />
+    <Compile Include="DomainLayer\MessageManagement\DummyMessageDisplayer.cs" />
+    <Compile Include="DomainLayer\MessageManagement\MessageDisplayer.cs" />
+    <Compile Include="DomainLayer\AudioManagement\CsCoreSoundAnalyser.cs" />
+    <Compile Include="Tools\SettingsManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

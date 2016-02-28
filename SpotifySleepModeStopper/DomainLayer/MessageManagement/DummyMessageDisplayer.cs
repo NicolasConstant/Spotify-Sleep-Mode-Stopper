@@ -1,6 +1,6 @@
 ﻿using SpotifyTools.Contracts;
 
-namespace SpotifyTools.Domain.MessageManagement
+namespace SpotifyTools.DomainLayer.MessageManagement
 {
     public class DummyMessageDisplayer : IMessageDisplayer
     {

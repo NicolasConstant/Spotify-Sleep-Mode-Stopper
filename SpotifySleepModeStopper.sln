@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{3D8B40CA-FF63-47A7-B987-16C32BABDA81}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifySleepModeStopper", "SpotifySleepModeStopper\SpotifySleepModeStopper.csproj", "{0EFA9F55-FD0A-4B27-B953-4B6F5213A7B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifySleepModeStopperGui", "SpotifySleepModeStopperGui\SpotifySleepModeStopperGui.csproj", "{8C0977F4-070D-4B83-A825-EDDECD812C36}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{389A2870-3198-4504-ACB6-1740086311A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{93B5C78A-1B0C-4F73-9AF8-572D04CBAEFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +29,10 @@ Global
 		{8C0977F4-070D-4B83-A825-EDDECD812C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C0977F4-070D-4B83-A825-EDDECD812C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C0977F4-070D-4B83-A825-EDDECD812C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93B5C78A-1B0C-4F73-9AF8-572D04CBAEFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93B5C78A-1B0C-4F73-9AF8-572D04CBAEFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93B5C78A-1B0C-4F73-9AF8-572D04CBAEFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93B5C78A-1B0C-4F73-9AF8-572D04CBAEFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,5 +40,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0EFA9F55-FD0A-4B27-B953-4B6F5213A7B5} = {3D8B40CA-FF63-47A7-B987-16C32BABDA81}
 		{8C0977F4-070D-4B83-A825-EDDECD812C36} = {EA773A42-7CE2-4520-936D-4B76A417252D}
+		{93B5C78A-1B0C-4F73-9AF8-572D04CBAEFE} = {389A2870-3198-4504-ACB6-1740086311A0}
 	EndGlobalSection
 EndGlobal
