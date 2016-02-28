@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SpotifyTools.Contracts;
 using SpotifyTools.Tools;
+using SpotifyTools.Tools.Model;
 
 namespace SpotifyTools
 {
@@ -17,7 +18,7 @@ namespace SpotifyTools
         private readonly ISoundAnalyser _soundAnalyser;
         private readonly IAppStatusReporting _appState;
         private readonly IAutoStartManager _autoStartManager;
-        private readonly ISettingsManager _settingsManager;
+        private readonly ISettingsManager<AppSettings> _settingsManager;
         private readonly IProcessAnalyser _processAnalyser;
 
         private bool _spotifyRunning;
@@ -37,7 +38,7 @@ namespace SpotifyTools
 
         #region Ctor
         public SpotifySaveModeStopperFacade(IMessageDisplayer messageDisplayer, IPreventSleepScreen preventSleepScreen,
-            ISoundAnalyser soundAnalyser, IProcessAnalyser processAnalyser, IAppStatusReporting appState, IAutoStartManager autoStartManager, ISettingsManager settingsManager, int refreshRate = -1)
+            ISoundAnalyser soundAnalyser, IProcessAnalyser processAnalyser, IAppStatusReporting appState, IAutoStartManager autoStartManager, ISettingsManager<AppSettings> settingsManager, int refreshRate = -1)
         {
             _messageDisplayer = messageDisplayer;
             _preventSleepScreen = preventSleepScreen;

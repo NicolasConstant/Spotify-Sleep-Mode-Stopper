@@ -13,6 +13,7 @@ using SpotifyTools.DomainLayer.AudioManagement;
 using SpotifyTools.DomainLayer.MessageManagement;
 using SpotifyTools.DomainLayer.PowerManagement;
 using SpotifyTools.Tools;
+using SpotifyTools.Tools.Model;
 
 namespace SpotifySleepModeStopperGui
 {
@@ -30,11 +31,12 @@ namespace SpotifySleepModeStopperGui
         private const string AppNotStartingOnStartupMess = "Auto-Start: Off";
         private const string ScreenSleepEnabledMess = "Screen Sleep: On";
         private const string ScreenSleepDisabledMess = "Screen Sleep: Off";
+        private const string ExitMess = "Exit";
         
         private readonly MenuItem _autoStartMenuItem;
         private readonly MenuItem _screenBehaviorMenuItem;
 
-        //private string _mess;
+        private const string AppName = "SpotifySleepModeStopper";
 
         public MainWindow()
         {
@@ -48,9 +50,9 @@ namespace SpotifySleepModeStopperGui
             var processAnalyser = new ProcessAnalyser();
 
             var fullPath = Assembly.GetExecutingAssembly().Location;
-            var autoStartManager = new AutoStartManager("SpotifySleepModeStopper", fullPath);
+            var autoStartManager = new AutoStartManager(AppName, fullPath);
 
-            var settingsManager = new SettingsManager("SpotifySleepModeStopper");
+            var settingsManager = new SettingsManager<AppSettings>(AppName, new AppSettings {IsScreenSleepEnabled = false});
             #endregion
 
             _facade = new SpotifySaveModeStopperFacade(messageDisplayer, powerHandler, soundAnalyser, processAnalyser, iconChanger, autoStartManager, settingsManager);
@@ -79,7 +81,7 @@ namespace SpotifySleepModeStopperGui
             var contextMenu = new ContextMenu();
             var exitMenuItem = new MenuItem();
             exitMenuItem.Index = 2;
-            exitMenuItem.Text = "Exit";
+            exitMenuItem.Text = ExitMess;
             exitMenuItem.Click += exit_Click;
 
             _screenBehaviorMenuItem = new MenuItem();

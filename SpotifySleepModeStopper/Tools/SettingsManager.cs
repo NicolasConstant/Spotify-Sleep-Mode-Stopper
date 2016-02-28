@@ -5,22 +5,24 @@ using SpotifyTools.Tools.Model;
 
 namespace SpotifyTools.Tools
 {
-    public class SettingsManager : ISettingsManager
+    public class SettingsManager<T> : ISettingsManager<T> where T : class
     {
         private readonly string _fullPathSettingsFile;
+        private readonly T _defaultValue;
 
         #region Ctor
-        public SettingsManager(string appName, string fileName = "settings.config")
+        public SettingsManager(string appName, T defaultValue, string fileName = "settings.config")
         {
             var userAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\" + appName;
 
             if (!Directory.Exists(userAppDataFolder)) Directory.CreateDirectory(userAppDataFolder);
 
             _fullPathSettingsFile = userAppDataFolder + @"\" + fileName;
+            _defaultValue = defaultValue;
         }
         #endregion
 
-        public AppSettings GetConfig()
+        public T GetConfig()
         {
             string configFile;
 
@@ -30,17 +32,17 @@ namespace SpotifyTools.Tools
                 try
                 {
                     configFile = File.ReadAllText(_fullPathSettingsFile);
-                    return JsonSerializerHelper.Deserialize<AppSettings>(configFile);
+                    return JsonSerializerHelper.Deserialize<T>(configFile);
                 }
                 catch (Exception)
                 {
                     configFile = ResetConfigFile();
                 }
 
-            return JsonSerializerHelper.Deserialize<AppSettings>(configFile);
+            return JsonSerializerHelper.Deserialize<T>(configFile);
         }
 
-        public void SaveConfig(AppSettings settings)
+        public void SaveConfig(T settings)
         {
             var serializedConfig = JsonSerializerHelper.Serialize(settings);
 
@@ -49,10 +51,8 @@ namespace SpotifyTools.Tools
 
         private string ResetConfigFile()
         {
-            var newSettings = new AppSettings() { IsScreenSleepEnabled = false };
-
-            SaveConfig(newSettings);
-            return JsonSerializerHelper.Serialize(newSettings);
+            SaveConfig(_defaultValue);
+            return JsonSerializerHelper.Serialize(_defaultValue);
         }
     }
 }

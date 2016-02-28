@@ -2,9 +2,9 @@
 
 namespace SpotifyTools.Contracts
 {
-    public interface ISettingsManager
+    public interface ISettingsManager<T> where T : class
     {
-        AppSettings GetConfig();
-        void SaveConfig(AppSettings settings);
+        T GetConfig();
+        void SaveConfig(T settings);
     }
 }

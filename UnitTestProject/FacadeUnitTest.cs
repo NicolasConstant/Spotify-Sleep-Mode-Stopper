@@ -25,7 +25,7 @@ namespace UnitTestProject
         [TestMethod]
         public void CheckIfScreenSleepEnabledTestMethod()
         {
-            var settingsManagerStub = MockRepository.GenerateMock<ISettingsManager>();
+            var settingsManagerStub = MockRepository.GenerateMock<ISettingsManager<AppSettings>>();
             settingsManagerStub.Expect(x => x.GetConfig()).Return(new AppSettings { IsScreenSleepEnabled = true });
 
             var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, null, settingsManagerStub);
@@ -37,7 +37,7 @@ namespace UnitTestProject
         [TestMethod]
         public void CheckIfAutoStartEnabledTestMethod()
         {
-            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager>();
+            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager<AppSettings>>();
             settingsManagerStub.Stub(x => x.GetConfig()).Return(new AppSettings { IsScreenSleepEnabled = true });
 
             var autoStartManagerStub = MockRepository.GenerateMock<IAutoStartManager>();
@@ -54,7 +54,7 @@ namespace UnitTestProject
         {
             var saveConfigFired = new ManualResetEvent(false);
 
-            var settingsManagerStub = MockRepository.GenerateMock<ISettingsManager>();
+            var settingsManagerStub = MockRepository.GenerateMock<ISettingsManager<AppSettings>>();
             settingsManagerStub.Stub(x => x.GetConfig()).Return(new AppSettings { IsScreenSleepEnabled = true });
             settingsManagerStub.Expect(x => x.SaveConfig(new AppSettings()))
                 .Constraints(Property.Value("IsScreenSleepEnabled", true))
@@ -72,7 +72,7 @@ namespace UnitTestProject
         {
             var autoStartChangeFired = new ManualResetEvent(false);
 
-            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager>();
+            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager<AppSettings>>();
             settingsManagerStub.Stub(x => x.GetConfig()).Return(new AppSettings { IsScreenSleepEnabled = true });
 
             var autoStartManagerStub = MockRepository.GenerateMock<IAutoStartManager>();
@@ -94,7 +94,7 @@ namespace UnitTestProject
             var messageDisplayerStub = MockRepository.GenerateStub<IMessageDisplayer>();
             messageDisplayerStub.Stub(x => x.OutputMessage(Arg<string>.Is.Anything)).Repeat.Any();
 
-            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager>();
+            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager<AppSettings>>();
             settingsManagerStub.Stub(x => x.GetConfig()).Return(new AppSettings { IsScreenSleepEnabled = true });
 
             var processAnalyserStub = MockRepository.GenerateStub<IProcessAnalyser>();
@@ -159,7 +159,7 @@ namespace UnitTestProject
             var messageDisplayerStub = MockRepository.GenerateStub<IMessageDisplayer>();
             messageDisplayerStub.Stub(x => x.OutputMessage(Arg<string>.Is.Anything)).Repeat.Any();
 
-            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager>();
+            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager<AppSettings>>();
             settingsManagerStub.Stub(x => x.GetConfig()).Return(new AppSettings { IsScreenSleepEnabled = true });
 
             var processAnalyserStub = MockRepository.GenerateStub<IProcessAnalyser>();
@@ -226,7 +226,7 @@ namespace UnitTestProject
             var messageDisplayerStub = MockRepository.GenerateStub<IMessageDisplayer>();
             messageDisplayerStub.Stub(x => x.OutputMessage(Arg<string>.Is.Anything)).Repeat.Any();
 
-            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager>();
+            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager<AppSettings>>();
             settingsManagerStub.Stub(x => x.GetConfig()).Return(new AppSettings { IsScreenSleepEnabled = true });
 
             var processAnalyserStub = MockRepository.GenerateStub<IProcessAnalyser>();

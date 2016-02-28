@@ -22,7 +22,7 @@ namespace UnitTestProject
 
             Assert.IsFalse(File.Exists(fullFileName));
 
-            var settingsManager = new SettingsManager(AppName);
+            var settingsManager = new SettingsManager<AppSettings>(AppName, new AppSettings {IsScreenSleepEnabled = false});
             settingsManager.GetConfig(); //First get => Reset config
 
             Assert.IsTrue(File.Exists(fullFileName));
@@ -40,7 +40,7 @@ namespace UnitTestProject
 
             var appSettings = new AppSettings() {IsScreenSleepEnabled = true};
 
-            var settingsManager = new SettingsManager(AppName, configName);
+            var settingsManager = new SettingsManager<AppSettings>(AppName, new AppSettings {IsScreenSleepEnabled = false}, configName);
             settingsManager.SaveConfig(appSettings);
 
             Assert.IsTrue(File.Exists(fullFileName));
@@ -70,7 +70,7 @@ namespace UnitTestProject
 
             File.WriteAllText(fullFileName, configContentFalse);
 
-            var settingsManager = new SettingsManager(AppName, configName);
+            var settingsManager = new SettingsManager<AppSettings>(AppName, new AppSettings { IsScreenSleepEnabled = false }, configName);
             var config = settingsManager.GetConfig();
 
             Assert.IsFalse(config.IsScreenSleepEnabled);
@@ -94,7 +94,7 @@ namespace UnitTestProject
 
             File.WriteAllText(fullFileName, corruptConfigContent);
 
-            var settingsManager = new SettingsManager(AppName, configName);
+            var settingsManager = new SettingsManager<AppSettings>(AppName, new AppSettings { IsScreenSleepEnabled = false }, configName);
             var config = settingsManager.GetConfig();
 
             Assert.IsFalse(config.IsScreenSleepEnabled);
