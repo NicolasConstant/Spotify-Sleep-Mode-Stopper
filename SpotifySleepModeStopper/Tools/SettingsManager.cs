@@ -10,13 +10,13 @@ namespace SpotifyTools.Tools
         private readonly string _fullPathSettingsFile;
 
         #region Ctor
-        public SettingsManager()
+        public SettingsManager(string appName, string fileName = "settings.config")
         {
-            var userAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\SpotifySleepModeStopper";
+            var userAppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\" + appName;
 
             if (!Directory.Exists(userAppDataFolder)) Directory.CreateDirectory(userAppDataFolder);
 
-            _fullPathSettingsFile = userAppDataFolder + @"\settings.config";
+            _fullPathSettingsFile = userAppDataFolder + @"\" + fileName;
         }
         #endregion
 
@@ -30,6 +30,7 @@ namespace SpotifyTools.Tools
                 try
                 {
                     configFile = File.ReadAllText(_fullPathSettingsFile);
+                    return JsonSerializerHelper.Deserialize<AppSettings>(configFile);
                 }
                 catch (Exception)
                 {

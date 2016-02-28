@@ -49,7 +49,7 @@ namespace SpotifySleepModeStopperGui
             var fullPath = Assembly.GetExecutingAssembly().Location;
             var autoStartManager = new AutoStartManager("SpotifySleepModeStopper", fullPath);
 
-            var settingsManager = new SettingsManager();
+            var settingsManager = new SettingsManager("SpotifySleepModeStopper");
             #endregion
 
             _facade = new SpotifySaveModeStopperFacade(messageDisplayer, powerHandler, soundAnalyser, iconChanger, autoStartManager, settingsManager);
