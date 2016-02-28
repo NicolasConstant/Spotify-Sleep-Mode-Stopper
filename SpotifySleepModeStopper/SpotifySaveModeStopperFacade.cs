@@ -103,7 +103,7 @@ namespace SpotifyTools
             _preventSleepScreen.EnableConstantDisplayAndPower(false, false);
         }
 
-        public void ResetListening()
+        private void ResetListening()
         {
             _messageDisplayer.OutputMessage("Reset listening");
 
