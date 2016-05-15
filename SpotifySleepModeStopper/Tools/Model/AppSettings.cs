@@ -11,6 +11,15 @@ namespace SpotifyTools.Tools.Model
     public class AppSettings
     {
         [DataMember]
+        public string Version { get; set; } = "1.1";
+
+        [DataMember]
         public bool IsScreenSleepEnabled { get; set; }
+
+        [DataMember]
+        public bool DonationMessageActive { get; set; }
+
+        [DataMember]
+        public bool ScreenLockActive { get; set; }
     }
 }

@@ -32,9 +32,14 @@ namespace SpotifyTools.Tools
                 try
                 {
                     configFile = File.ReadAllText(_fullPathSettingsFile);
-                    return JsonSerializerHelper.Deserialize<T>(configFile);
+                    var settings = JsonSerializerHelper.Deserialize<T>(configFile);
+
+                    if (((dynamic) settings).Version == ((dynamic) _defaultValue).Version)
+                        return settings;
+
+                    configFile = ResetConfigFile();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     configFile = ResetConfigFile();
                 }

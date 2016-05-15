@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/packages
+/.vs
+/SpotifySleepModeStopper/bin
+/SpotifySleepModeStopper/obj
+/SpotifySleepModeStopperGui/bin
+/SpotifySleepModeStopperGui/obj
+/UnitTestProject/bin
+/UnitTestProject/obj

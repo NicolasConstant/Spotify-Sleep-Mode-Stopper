@@ -84,6 +84,16 @@ namespace SpotifyTools
             return _autoStartManager.IsAutoStartSet();
         }
 
+        public bool IsDonationActive()
+        {
+            return _settingsManager.GetConfig().DonationMessageActive;
+        }
+
+        public bool IsLockScreenActive()
+        {
+            return _settingsManager.GetConfig().ScreenLockActive;
+        }
+
         public void StartListening()
         {
             _messageDisplayer.OutputMessage("Start listening");
@@ -178,6 +188,9 @@ namespace SpotifyTools
             var isSpotifyPlaying = _soundAnalyser.IsProcessNameOutputingSound(SpotifyProcessName);
             return isSpotifyPlaying;
         }
+
+
+        
     }
 }
 

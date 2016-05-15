@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Windows;
@@ -32,9 +34,12 @@ namespace SpotifySleepModeStopperGui
         private const string ScreenSleepEnabledMess = "Screen Sleep: On";
         private const string ScreenSleepDisabledMess = "Screen Sleep: Off";
         private const string ExitMess = "Exit";
-        
+
         private readonly MenuItem _autoStartMenuItem;
         private readonly MenuItem _screenBehaviorMenuItem;
+        private readonly MenuItem _screenLockMenuItem;
+        private readonly MenuItem _donationMenuItem;
+        private readonly MenuItem _exitMenuItem;
 
         private const string AppName = "SpotifySleepModeStopper";
 
@@ -51,8 +56,14 @@ namespace SpotifySleepModeStopperGui
 
             var fullPath = Assembly.GetExecutingAssembly().Location;
             var autoStartManager = new AutoStartManager(AppName, fullPath);
-
-            var settingsManager = new SettingsManager<AppSettings>(AppName, new AppSettings {IsScreenSleepEnabled = false});
+            
+            var defaultSettings = new AppSettings
+            {
+                IsScreenSleepEnabled = false,
+                DonationMessageActive = true,
+                ScreenLockActive = false
+            };
+            var settingsManager = new SettingsManager<AppSettings>(AppName, defaultSettings);
             #endregion
 
             _facade = new SpotifySaveModeStopperFacade(messageDisplayer, powerHandler, soundAnalyser, processAnalyser, iconChanger, autoStartManager, settingsManager);
@@ -79,13 +90,16 @@ namespace SpotifySleepModeStopperGui
             _notifyIcon.Visible = true;
 
             var contextMenu = new ContextMenu();
-            var exitMenuItem = new MenuItem();
-            exitMenuItem.Index = 2;
-            exitMenuItem.Text = ExitMess;
-            exitMenuItem.Click += exit_Click;
 
+            //Exit
+            _exitMenuItem = new MenuItem();
+            _exitMenuItem.Index = 50;
+            _exitMenuItem.Text = ExitMess;
+            _exitMenuItem.Click += ExitOnClick;
+
+            //Screen Behavior
             _screenBehaviorMenuItem = new MenuItem();
-            _screenBehaviorMenuItem.Index = 1;
+            _screenBehaviorMenuItem.Index = 25;
 
             if (_facade.IsScreenSleepEnabled())
                 _screenBehaviorMenuItem.Text = ScreenSleepEnabledMess;
@@ -94,21 +108,57 @@ namespace SpotifySleepModeStopperGui
 
             _screenBehaviorMenuItem.Click += ScreenBehaviorMenuItemOnClick;
 
+            //LockScreen
+            if (_facade.IsLockScreenActive())
+            {
+                _screenLockMenuItem = new MenuItem();
+                _screenLockMenuItem.Index = 20;
+                _screenLockMenuItem.Text = "Lock Screen: Off";
+                _screenLockMenuItem.Click += LockScreenMenuItemOnClick;
+            }
+
+            //Donate
+            if (_facade.IsDonationActive())
+            {
+                _donationMenuItem = new MenuItem();
+                _donationMenuItem.Index = 10;
+                _donationMenuItem.Text = "Donate?";
+                _donationMenuItem.Click += DonationMenuItemOnClick;
+            }
+
+            //Autostart
             _autoStartMenuItem = new MenuItem();
             _autoStartMenuItem.Index = 0;
 
             if (_facade.IsAutoStartEnabled())
-                _autoStartMenuItem.Text = AppStartingOnStartupMess; //"Auto Startup";
+                _autoStartMenuItem.Text = AppStartingOnStartupMess;
             else
                 _autoStartMenuItem.Text = AppNotStartingOnStartupMess;
-
             _autoStartMenuItem.Click += AutoStartMenuItemOnClick;
 
-            contextMenu.MenuItems.AddRange(new[] { _autoStartMenuItem, _screenBehaviorMenuItem, exitMenuItem });
+            //Add all menu items
+            var menuList = new List<MenuItem>();
+            menuList.Add(_autoStartMenuItem);
+            menuList.Add(_screenBehaviorMenuItem);
+            if (_screenLockMenuItem != null) menuList.Add(_autoStartMenuItem);
+            if (_donationMenuItem != null) menuList.Add(_donationMenuItem);
+            menuList.Add(_exitMenuItem);
+
+            contextMenu.MenuItems.AddRange(menuList.ToArray());
             _notifyIcon.ContextMenu = contextMenu;
             #endregion
-            
+
             _facade.StartListening();
+        }
+
+        private void LockScreenMenuItemOnClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DonationMenuItemOnClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void ScreenBehaviorMenuItemOnClick(object sender, EventArgs eventArgs)
@@ -139,6 +189,16 @@ namespace SpotifySleepModeStopperGui
                 _autoStartMenuItem.Text = AppNotStartingOnStartupMess;
         }
 
+        private void DonateOnClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void LockScreenOnClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private void OnClosing(object sender, CancelEventArgs e)
         {
             _facade.StopListening();
@@ -148,9 +208,12 @@ namespace SpotifySleepModeStopperGui
 
             _screenBehaviorMenuItem.Click -= ScreenBehaviorMenuItemOnClick;
             _autoStartMenuItem.Click -= AutoStartMenuItemOnClick;
+            _exitMenuItem.Click -= ExitOnClick;
+            if(_donationMenuItem != null) _donationMenuItem.Click -= DonationMenuItemOnClick;
+            if(_screenLockMenuItem != null) _screenLockMenuItem.Click += LockScreenMenuItemOnClick;
         }
 
-        private void exit_Click(object sender, EventArgs e)
+        private void ExitOnClick(object sender, EventArgs e)
         {
             Application.Current.Shutdown();
         }
