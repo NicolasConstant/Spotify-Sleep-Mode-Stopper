@@ -46,7 +46,7 @@ namespace SpotifySleepModeStopperGui
             var iconChanger = new AppStateReporting(SetPlayingGui, SetNotPlayingGui);
             var messageDisplayer = new DummyMessageDisplayer();
             var powerHandler = new PowerRequestContextHandler();
-            var soundAnalyser = new CsCoreSoundAnalyser(messageDisplayer);
+            var soundAnalyser = new NAudioSoundAnalyser(messageDisplayer);
             var processAnalyser = new ProcessAnalyser();
 
             var fullPath = Assembly.GetExecutingAssembly().Location;
