@@ -32,9 +32,11 @@ namespace SpotifySleepModeStopperGui
         private const string ScreenSleepEnabledMess = "Screen Sleep: On";
         private const string ScreenSleepDisabledMess = "Screen Sleep: Off";
         private const string ExitMess = "Exit";
-        
+        private const string DonateMess = "Donate";
+
         private readonly MenuItem _autoStartMenuItem;
         private readonly MenuItem _screenBehaviorMenuItem;
+        private readonly MenuItem _donateMenuItem;
 
         private const string AppName = "SpotifySleepModeStopper";
 
@@ -104,7 +106,14 @@ namespace SpotifySleepModeStopperGui
 
             _autoStartMenuItem.Click += AutoStartMenuItemOnClick;
 
-            contextMenu.MenuItems.AddRange(new[] { _autoStartMenuItem, _screenBehaviorMenuItem, exitMenuItem });
+            _donateMenuItem = new MenuItem();
+            _donateMenuItem.Index = 2;
+            _donateMenuItem.Text = DonateMess;
+            _donateMenuItem.Click += DonateMenuItemOnClick;
+
+            exitMenuItem.Index = 3;
+
+            contextMenu.MenuItems.AddRange(new[] { _autoStartMenuItem, _screenBehaviorMenuItem, _donateMenuItem, exitMenuItem });
             _notifyIcon.ContextMenu = contextMenu;
             #endregion
             
@@ -139,6 +148,11 @@ namespace SpotifySleepModeStopperGui
                 _autoStartMenuItem.Text = AppNotStartingOnStartupMess;
         }
 
+        private void DonateMenuItemOnClick(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://www.nicolas-constant.com/donate/");
+        }
+
         private void OnClosing(object sender, CancelEventArgs e)
         {
             _facade.StopListening();
@@ -148,6 +162,7 @@ namespace SpotifySleepModeStopperGui
 
             _screenBehaviorMenuItem.Click -= ScreenBehaviorMenuItemOnClick;
             _autoStartMenuItem.Click -= AutoStartMenuItemOnClick;
+            _donateMenuItem.Click -= DonateMenuItemOnClick;
         }
 
         private void exit_Click(object sender, EventArgs e)
