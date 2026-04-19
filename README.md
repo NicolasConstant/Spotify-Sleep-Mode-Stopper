@@ -19,5 +19,5 @@ Once installed, just launch the app, it will automatically check the Spotify sta
 
 ## Libraries used
 
-NAudio [tps://github.com/filoe/cscore](https://github.com/naudio/NAudio)
+NAudio [https://github.com/naudio/NAudio](https://github.com/naudio/NAudio)
 
