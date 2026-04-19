@@ -13,11 +13,11 @@ Here is an app that will analyze if Spotify is running and playing music, if so,
 ## Installation
 
 Windows installer and app description here:
-http://nicolasconstant.github.io/Spotify-Sleep-Mode-Stopper/
+[http://nicolasconstant.github.io/Spotify-Sleep-Mode-Stopper/](http://nicolasconstant.github.io/Spotify-Sleep-Mode-Stopper/)
 
 Once installed, just launch the app, it will automatically check the Spotify status.
 
 ## Libraries used
 
-CSCore https://github.com/filoe/cscore
+NAudio [tps://github.com/filoe/cscore](https://github.com/naudio/NAudio)
 
