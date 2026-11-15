@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
@@ -14,6 +14,7 @@ using SpotifyTools.DomainLayer.MessageManagement;
 using SpotifyTools.DomainLayer.PowerManagement;
 using SpotifyTools.Tools;
 using SpotifyTools.Tools.Model;
+using SpotifyTools.Contracts;
 
 namespace SpotifySleepModeStopperGui
 {
@@ -31,11 +32,14 @@ namespace SpotifySleepModeStopperGui
         private const string AppNotStartingOnStartupMess = "Auto-Start: Off";
         private const string ScreenSleepEnabledMess = "Screen Sleep: On";
         private const string ScreenSleepDisabledMess = "Screen Sleep: Off";
+        private const string MediaSessionFallbackEnabledMess = "Media Session Fallback: On";
+        private const string MediaSessionFallbackDisabledMess = "Media Session Fallback: Off";
         private const string ExitMess = "Exit";
         private const string DonateMess = "Donate";
 
         private readonly MenuItem _autoStartMenuItem;
         private readonly MenuItem _screenBehaviorMenuItem;
+        private readonly MenuItem _mediaSessionFallbackMenuItem;
         private readonly MenuItem _donateMenuItem;
 
         private const string AppName = "SpotifySleepModeStopper";
@@ -50,14 +54,15 @@ namespace SpotifySleepModeStopperGui
             var powerHandler = new PowerRequestContextHandler();
             var soundAnalyser = new NAudioSoundAnalyser(messageDisplayer);
             var processAnalyser = new ProcessAnalyser();
+            var mediaSessionDetector = new WindowsMediaSessionDetector();
 
             var fullPath = Assembly.GetExecutingAssembly().Location;
             var autoStartManager = new AutoStartManager(AppName, fullPath);
 
-            var settingsManager = new SettingsManager<AppSettings>(AppName, new AppSettings {IsScreenSleepEnabled = false});
+            var settingsManager = new SettingsManager<AppSettings>(AppName, new AppSettings { IsScreenSleepEnabled = false, IsMediaSessionFallbackEnabled = false });
             #endregion
 
-            _facade = new SpotifySaveModeStopperFacade(messageDisplayer, powerHandler, soundAnalyser, processAnalyser, iconChanger, autoStartManager, settingsManager);
+            _facade = new SpotifySaveModeStopperFacade(messageDisplayer, powerHandler, soundAnalyser, processAnalyser, iconChanger, autoStartManager, settingsManager, mediaSessionDetector);
 
             #region Events Subscription
             Closing += OnClosing;
@@ -96,6 +101,16 @@ namespace SpotifySleepModeStopperGui
 
             _screenBehaviorMenuItem.Click += ScreenBehaviorMenuItemOnClick;
 
+            _mediaSessionFallbackMenuItem = new MenuItem();
+            _mediaSessionFallbackMenuItem.Index = 2;
+
+            if (_facade.IsMediaSessionFallbackEnabled())
+                _mediaSessionFallbackMenuItem.Text = MediaSessionFallbackEnabledMess;
+            else
+                _mediaSessionFallbackMenuItem.Text = MediaSessionFallbackDisabledMess;
+
+            _mediaSessionFallbackMenuItem.Click += MediaSessionFallbackMenuItemOnClick;
+
             _autoStartMenuItem = new MenuItem();
             _autoStartMenuItem.Index = 0;
 
@@ -107,13 +122,13 @@ namespace SpotifySleepModeStopperGui
             _autoStartMenuItem.Click += AutoStartMenuItemOnClick;
 
             _donateMenuItem = new MenuItem();
-            _donateMenuItem.Index = 2;
+            _donateMenuItem.Index = 3;
             _donateMenuItem.Text = DonateMess;
             _donateMenuItem.Click += DonateMenuItemOnClick;
 
-            exitMenuItem.Index = 3;
+            exitMenuItem.Index = 4;
 
-            contextMenu.MenuItems.AddRange(new[] { _autoStartMenuItem, _screenBehaviorMenuItem, _donateMenuItem, exitMenuItem });
+            contextMenu.MenuItems.AddRange(new[] { _autoStartMenuItem, _screenBehaviorMenuItem, _mediaSessionFallbackMenuItem, _donateMenuItem, exitMenuItem });
             _notifyIcon.ContextMenu = contextMenu;
             #endregion
             
@@ -132,6 +147,20 @@ namespace SpotifySleepModeStopperGui
                 _screenBehaviorMenuItem.Text = ScreenSleepEnabledMess;
             else
                 _screenBehaviorMenuItem.Text = ScreenSleepDisabledMess;
+        }
+
+        private void MediaSessionFallbackMenuItemOnClick(object sender, EventArgs eventArgs)
+        {
+            var isSet = _facade.IsMediaSessionFallbackEnabled();
+
+            //Change Value
+            _facade.ChangeMediaSessionFallback(!isSet);
+
+            //Update GUI
+            if (!isSet)
+                _mediaSessionFallbackMenuItem.Text = MediaSessionFallbackEnabledMess;
+            else
+                _mediaSessionFallbackMenuItem.Text = MediaSessionFallbackDisabledMess;
         }
 
         private void AutoStartMenuItemOnClick(object sender, EventArgs e)
@@ -161,6 +190,7 @@ namespace SpotifySleepModeStopperGui
             _notifyIcon.Dispose();
 
             _screenBehaviorMenuItem.Click -= ScreenBehaviorMenuItemOnClick;
+            _mediaSessionFallbackMenuItem.Click -= MediaSessionFallbackMenuItemOnClick;
             _autoStartMenuItem.Click -= AutoStartMenuItemOnClick;
             _donateMenuItem.Click -= DonateMenuItemOnClick;
         }
@@ -175,7 +205,7 @@ namespace SpotifySleepModeStopperGui
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
                 _notifyIcon.Icon = _notPlayingIcon;
-                _notifyIcon.Text = "Spotify isn't playing";
+                _notifyIcon.Text = "No media is playing";
             }));
         }
 
@@ -184,7 +214,7 @@ namespace SpotifySleepModeStopperGui
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
                 _notifyIcon.Icon = _playingIcon;
-                _notifyIcon.Text = "Spotify is playing";
+                _notifyIcon.Text = "Media is playing";
             }));
         }
     }

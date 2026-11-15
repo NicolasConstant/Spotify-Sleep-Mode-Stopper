@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SpotifyTools.Contracts;
@@ -20,10 +18,12 @@ namespace SpotifyTools
         private readonly IAutoStartManager _autoStartManager;
         private readonly ISettingsManager<AppSettings> _settingsManager;
         private readonly IProcessAnalyser _processAnalyser;
+        private readonly IMediaSessionDetector _mediaSessionDetector;
 
         private bool _spotifyRunning;
         private bool _spotifyPlaying;
         private bool _screenSleepEnabled;
+        private bool _isMediaSessionFallbackEnabled;
 
         private bool _appStateHasChanged = false;
 
@@ -38,7 +38,7 @@ namespace SpotifyTools
 
         #region Ctor
         public SpotifySaveModeStopperFacade(IMessageDisplayer messageDisplayer, IPreventSleepScreen preventSleepScreen,
-            ISoundAnalyser soundAnalyser, IProcessAnalyser processAnalyser, IAppStatusReporting appState, IAutoStartManager autoStartManager, ISettingsManager<AppSettings> settingsManager, int refreshRate = -1)
+            ISoundAnalyser soundAnalyser, IProcessAnalyser processAnalyser, IAppStatusReporting appState, IAutoStartManager autoStartManager, ISettingsManager<AppSettings> settingsManager, IMediaSessionDetector mediaSessionDetector, int refreshRate = -1)
         {
             _messageDisplayer = messageDisplayer;
             _preventSleepScreen = preventSleepScreen;
@@ -47,8 +47,10 @@ namespace SpotifyTools
             _autoStartManager = autoStartManager;
             _settingsManager = settingsManager;
             _processAnalyser = processAnalyser;
+            _mediaSessionDetector = mediaSessionDetector;
 
             _screenSleepEnabled = IsScreenSleepEnabled();
+            _isMediaSessionFallbackEnabled = IsMediaSessionFallbackEnabled();
             if(refreshRate > 0)
                 _checkInterval = TimeSpan.FromSeconds(refreshRate);
         }
@@ -73,6 +75,16 @@ namespace SpotifyTools
             _autoStartManager.SetAutoStart(autoStartEnabled);
         }
 
+        public void ChangeMediaSessionFallback(bool mediaSessionFallbackEnabled)
+        {
+            _isMediaSessionFallbackEnabled = mediaSessionFallbackEnabled;
+
+            //Save new settings
+            var settings = _settingsManager.GetConfig();
+            settings.IsMediaSessionFallbackEnabled = mediaSessionFallbackEnabled;
+            _settingsManager.SaveConfig(settings);
+        }
+
         public bool IsScreenSleepEnabled()
         {
             var settings = _settingsManager.GetConfig();
@@ -82,6 +94,12 @@ namespace SpotifyTools
         public bool IsAutoStartEnabled()
         {
             return _autoStartManager.IsAutoStartSet();
+        }
+
+        public bool IsMediaSessionFallbackEnabled()
+        {
+            var settings = _settingsManager.GetConfig();
+            return settings.IsMediaSessionFallbackEnabled;
         }
 
         public void StartListening()
@@ -127,21 +145,18 @@ namespace SpotifyTools
                         _messageDisplayer.OutputMessage("Spotify Running: " + _spotifyRunning);
                     }
 
-                    if (_spotifyRunning)
+                    var isMediaPlaying = IsMediaCurrentlyPlaying();
+                    if (_spotifyPlaying != isMediaPlaying)
                     {
-                        var isSpotifyPlaying = IsSoundStreaming();
-                        if (_spotifyPlaying != isSpotifyPlaying)
-                        {
-                            _appStateHasChanged = true;
-                            _spotifyPlaying = isSpotifyPlaying;
-                            _messageDisplayer.OutputMessage("Spotify Playing: " + _spotifyPlaying);
-                        }
+                        _appStateHasChanged = true;
+                        _spotifyPlaying = isMediaPlaying;
+                        _messageDisplayer.OutputMessage("Media Playing: " + _spotifyPlaying);
                     }
                 }
 
                 if (_appStateHasChanged)
                 {
-                    if (_spotifyRunning && _spotifyPlaying)
+                    if (_spotifyPlaying)
                     {
                         _messageDisplayer.OutputMessage("Anti Sleep Mode is Enabled");
                         _appState.NotifyAntiSleepingModeIsActivated();
@@ -178,7 +193,28 @@ namespace SpotifyTools
             var isSpotifyPlaying = _soundAnalyser.IsProcessNameOutputingSound(SpotifyProcessName);
             return isSpotifyPlaying;
         }
+
+        private bool IsMediaCurrentlyPlaying()
+        {
+            // Primary detection: the Spotify process is running and outputting sound.
+            if (_spotifyRunning && IsSoundStreaming())
+                return true;
+
+            // Fallback detection: any player that integrates with Windows media keys
+            // reports itself as playing. Only used when explicitly enabled.
+            if (_isMediaSessionFallbackEnabled && _mediaSessionDetector != null)
+            {
+                try
+                {
+                    return _mediaSessionDetector.IsMediaPlaying();
+                }
+                catch (Exception e)
+                {
+                    _messageDisplayer.OutputMessage("Media session fallback exception: " + e.Message);
+                }
+            }
+
+            return false;
+        }
     }
 }
-
-
