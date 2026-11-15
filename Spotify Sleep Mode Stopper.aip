@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="23.6" version="23.6" Modules="simple" RootPath="." Language="en" Id="{8439977C-4137-40CA-BB55-EC0DFB6A87AD}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="23.6" version="24.2.1" Modules="simple" RootPath="." Language="en" Id="{8439977C-4137-40CA-BB55-EC0DFB6A87AD}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_APP_FILE" Value="[#SpotifySleepModeStopper.exe]"/>
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
@@ -12,10 +12,10 @@
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/NicolasConstant/Spotify-Sleep-Mode-Stopper/"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nicolas Constant"/>
-    <ROW Property="ProductCode" Value="1033:{D98000CB-2D66-4D2B-891F-A0EF2D7C199A} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{38953E16-996D-4385-B964-7CB2E785061E} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Spotify Sleep Mode Stopper"/>
-    <ROW Property="ProductVersion" Value="2.0.0" Options="32"/>
+    <ROW Property="ProductVersion" Value="2.1.0" Options="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{7E58ECD6-BCDB-423D-BB5F-454AC4EB4421}"/>
