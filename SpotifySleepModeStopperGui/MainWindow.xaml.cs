@@ -32,8 +32,8 @@ namespace SpotifySleepModeStopperGui
         private const string AppNotStartingOnStartupMess = "Auto-Start: Off";
         private const string ScreenSleepEnabledMess = "Screen Sleep: On";
         private const string ScreenSleepDisabledMess = "Screen Sleep: Off";
-        private const string MediaSessionFallbackEnabledMess = "Media Session Fallback: On";
-        private const string MediaSessionFallbackDisabledMess = "Media Session Fallback: Off";
+        private const string MediaSessionFallbackEnabledMess = "SMTC Analysis: On";
+        private const string MediaSessionFallbackDisabledMess = "SMTC Analysis: Off";
         private const string ExitMess = "Exit";
         private const string DonateMess = "Donate";
 
