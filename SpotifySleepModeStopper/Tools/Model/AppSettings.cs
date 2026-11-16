@@ -12,5 +12,8 @@ namespace SpotifyTools.Tools.Model
     {
         [DataMember]
         public bool IsScreenSleepEnabled { get; set; }
+
+        [DataMember]
+        public bool IsMediaSessionFallbackEnabled { get; set; }
     }
 }

@@ -27,15 +27,17 @@ vstest.console.exe UnitTestProject/bin/Debug/UnitTestProject.dll
 
 - **Entry point**: `SpotifySleepModeStopperGui/App.xaml.cs` launches WPF GUI
 - **Core facade**: `SpotifySaveModeStopperFacade.cs` orchestrates detection + sleep prevention
-- **Audio detection**: Uses CSCore library to check if Spotify process is outputting sound
+- **Audio detection**: Uses NAudio library to check if Spotify process is outputting sound
+- **Media session fallback**: Optional `WindowsMediaSessionDetector.cs` uses Windows SMTC to detect any player reporting playback (Spotifast, Soloist, browsers, etc.). Disabled by default; toggled from the tray context menu.
 - **Power management**: `PowerRequestContextHandler.cs` calls Windows `SetThreadExecutionState` API
 - **Namespace mismatch**: Project folder uses "SpotifySleepModeStopper" but code namespace is `SpotifyTools`
 
 ## Dependencies & Package Restore
 
-- Uses legacy `packages.config` (not PackageReference)
+- Uses `PackageReference` (not legacy `packages.config`)
 - NuGet packages:
-  - `CSCore` (audio analysis) - Core lib only
+  - `NAudio` (audio analysis) - Core lib only
+  - `Microsoft.Windows.SDK.Contracts` (SMTC / media session fallback) - Core lib only
   - `RhinoMocks` (mocking) - Test project only
 - **Restore before build**: `nuget restore SpotifySleepModeStopper.sln`
 
@@ -55,5 +57,5 @@ vstest.console.exe UnitTestProject/bin/Debug/UnitTestProject.dll
 ## Release Build
 
 - GUI project outputs `SpotifySleepModeStopper.exe`
-- Copy `CSCore.dll` alongside executable
+- Copy `NAudio.dll` (and NAudio.Core/NAudio.Wasapi if needed) alongside executable
 - Uses icon resources: `music.ico`, `music_playing.ico`, `music_big.ico`

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Security.Policy;
 using System.Threading;
@@ -28,7 +28,7 @@ namespace UnitTestProject
             var settingsManagerStub = MockRepository.GenerateMock<ISettingsManager<AppSettings>>();
             settingsManagerStub.Expect(x => x.GetConfig()).Return(new AppSettings { IsScreenSleepEnabled = true });
 
-            var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, null, settingsManagerStub);
+            var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, null, settingsManagerStub, null);
 
             Assert.IsTrue(facade.IsScreenSleepEnabled());
             settingsManagerStub.VerifyAllExpectations();
@@ -43,7 +43,7 @@ namespace UnitTestProject
             var autoStartManagerStub = MockRepository.GenerateMock<IAutoStartManager>();
             autoStartManagerStub.Expect(x => x.IsAutoStartSet()).Return(true);
 
-            var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, autoStartManagerStub, settingsManagerStub);
+            var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, autoStartManagerStub, settingsManagerStub, null);
 
             Assert.IsTrue(facade.IsAutoStartEnabled());
             autoStartManagerStub.VerifyAllExpectations();
@@ -60,7 +60,7 @@ namespace UnitTestProject
                 .Constraints(Property.Value("IsScreenSleepEnabled", true))
                 .Do((Action<AppSettings>)(ant => { saveConfigFired.Set(); }));
 
-            var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, null, settingsManagerStub);
+            var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, null, settingsManagerStub, null);
             facade.ChangeScreenSleep(true);
 
             Assert.IsTrue(saveConfigFired.WaitOne(10));
@@ -79,7 +79,7 @@ namespace UnitTestProject
             autoStartManagerStub.Expect(x => x.SetAutoStart(Arg<bool>.Is.Equal(true)))
                 .Do((Action<bool>)(ant => { autoStartChangeFired.Set(); }));
 
-            var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, autoStartManagerStub, settingsManagerStub);
+            var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, autoStartManagerStub, settingsManagerStub, null);
             facade.ChangeAutoStart(true);
 
             Assert.IsTrue(autoStartChangeFired.WaitOne(10));
@@ -141,7 +141,7 @@ namespace UnitTestProject
                         invk.ReturnValue = false;
                 });
 
-            var facade = new SpotifySaveModeStopperFacade(messageDisplayerStub, preventSleepScreenMock, soundAnalyserMock, processAnalyserStub, appStateStub, null, settingsManagerStub, 1);
+            var facade = new SpotifySaveModeStopperFacade(messageDisplayerStub, preventSleepScreenMock, soundAnalyserMock, processAnalyserStub, appStateStub, null, settingsManagerStub, null, 1);
             facade.StartListening();
             
             Assert.IsTrue(constantDisplayEnabled.WaitOne(2*2*1500));
@@ -204,7 +204,7 @@ namespace UnitTestProject
                         invk.ReturnValue = true;
                 });
 
-            var facade = new SpotifySaveModeStopperFacade(messageDisplayerStub, preventSleepScreenMock, soundAnalyserMock, processAnalyserStub, appStateStub, null, settingsManagerStub, 1);
+            var facade = new SpotifySaveModeStopperFacade(messageDisplayerStub, preventSleepScreenMock, soundAnalyserMock, processAnalyserStub, appStateStub, null, settingsManagerStub, null, 1);
             facade.StartListening();
 
             Assert.IsTrue(constantDisplayEnabled.WaitOne(2 * 2 * 1500));
@@ -283,7 +283,7 @@ namespace UnitTestProject
                         invk.ReturnValue = true;
                 });
 
-            var facade = new SpotifySaveModeStopperFacade(messageDisplayerStub, preventSleepScreenMock, soundAnalyserMock, processAnalyserStub, appStateStub, null, settingsManagerStub, 1);
+            var facade = new SpotifySaveModeStopperFacade(messageDisplayerStub, preventSleepScreenMock, soundAnalyserMock, processAnalyserStub, appStateStub, null, settingsManagerStub, null, 1);
             facade.StartListening();
 
             var debugCoef = 1;
@@ -305,6 +305,132 @@ namespace UnitTestProject
 
             preventSleepScreenMock.VerifyAllExpectations();
             soundAnalyserMock.VerifyAllExpectations();
+        }
+
+        [TestMethod]
+        public void CheckIfMediaSessionFallbackEnabledTestMethod()
+        {
+            var settingsManagerStub = MockRepository.GenerateMock<ISettingsManager<AppSettings>>();
+            settingsManagerStub.Expect(x => x.GetConfig()).Return(new AppSettings { IsMediaSessionFallbackEnabled = true });
+
+            var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, null, settingsManagerStub, null);
+
+            Assert.IsTrue(facade.IsMediaSessionFallbackEnabled());
+            settingsManagerStub.VerifyAllExpectations();
+        }
+
+        [TestMethod]
+        public void ChangeMediaSessionFallbackSettingsTestMethod()
+        {
+            var saveConfigFired = new ManualResetEvent(false);
+
+            var settingsManagerStub = MockRepository.GenerateMock<ISettingsManager<AppSettings>>();
+            settingsManagerStub.Stub(x => x.GetConfig()).Return(new AppSettings { IsMediaSessionFallbackEnabled = false });
+            settingsManagerStub.Expect(x => x.SaveConfig(new AppSettings()))
+                .Constraints(Property.Value("IsMediaSessionFallbackEnabled", true))
+                .Do((Action<AppSettings>)(ant => { saveConfigFired.Set(); }));
+
+            var facade = new SpotifySaveModeStopperFacade(null, null, null, null, null, null, settingsManagerStub, null);
+            facade.ChangeMediaSessionFallback(true);
+
+            Assert.IsTrue(saveConfigFired.WaitOne(10));
+            settingsManagerStub.VerifyAllExpectations();
+        }
+
+        [TestMethod]
+        public void MediaSessionFallbackEnabledTestMethod()
+        {
+            const string spotifyProcessName = "Spotify";
+
+            var messageDisplayerStub = MockRepository.GenerateStub<IMessageDisplayer>();
+            messageDisplayerStub.Stub(x => x.OutputMessage(Arg<string>.Is.Anything)).Repeat.Any();
+
+            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager<AppSettings>>();
+            settingsManagerStub.Stub(x => x.GetConfig()).Return(new AppSettings { IsScreenSleepEnabled = true, IsMediaSessionFallbackEnabled = true });
+
+            var processAnalyserStub = MockRepository.GenerateStub<IProcessAnalyser>();
+            processAnalyserStub.Stub(x => x.IsAppRunning(spotifyProcessName))
+                .Repeat.Any()
+                .Return(true);
+
+            var appStateStub = MockRepository.GenerateStub<IAppStatusReporting>();
+            appStateStub.Stub(x => x.NotifyAntiSleepingModeIsActivated());
+            appStateStub.Stub(x => x.NotifyAntiSleepingModeIsDisabled());
+
+            var constantDisplayEnabled = new ManualResetEvent(false);
+
+            var preventSleepScreenMock = MockRepository.GenerateMock<IPreventSleepScreen>();
+            preventSleepScreenMock.Expect(x => x.EnableConstantDisplayAndPower(true, false))
+                .Do((Action<bool, bool>)((contantPower, constantScreen) =>
+                {
+                    constantDisplayEnabled.Set();
+                }));
+
+            var soundAnalyserMock = MockRepository.GenerateMock<ISoundAnalyser>();
+            soundAnalyserMock.Expect(x => x.IsProcessNameOutputingSound(Arg<string>.Is.Equal(spotifyProcessName)))
+                .Return(false)
+                .Repeat.Any();
+
+            var mediaSessionDetectorMock = MockRepository.GenerateMock<IMediaSessionDetector>();
+            mediaSessionDetectorMock.Expect(x => x.IsMediaPlaying())
+                .Return(true)
+                .Repeat.Any();
+
+            var facade = new SpotifySaveModeStopperFacade(messageDisplayerStub, preventSleepScreenMock, soundAnalyserMock, processAnalyserStub, appStateStub, null, settingsManagerStub, mediaSessionDetectorMock, 1);
+            facade.StartListening();
+
+            Assert.IsTrue(constantDisplayEnabled.WaitOne(2 * 2 * 1500));
+
+            preventSleepScreenMock.VerifyAllExpectations();
+            soundAnalyserMock.VerifyAllExpectations();
+            mediaSessionDetectorMock.VerifyAllExpectations();
+        }
+
+        [TestMethod]
+        public void MediaSessionFallbackDisabledTestMethod()
+        {
+            const string spotifyProcessName = "Spotify";
+
+            var messageDisplayerStub = MockRepository.GenerateStub<IMessageDisplayer>();
+            messageDisplayerStub.Stub(x => x.OutputMessage(Arg<string>.Is.Anything)).Repeat.Any();
+
+            var settingsManagerStub = MockRepository.GenerateStub<ISettingsManager<AppSettings>>();
+            settingsManagerStub.Stub(x => x.GetConfig()).Return(new AppSettings { IsScreenSleepEnabled = true, IsMediaSessionFallbackEnabled = false });
+
+            var processAnalyserStub = MockRepository.GenerateStub<IProcessAnalyser>();
+            processAnalyserStub.Stub(x => x.IsAppRunning(spotifyProcessName))
+                .Repeat.Any()
+                .Return(true);
+
+            var appStateStub = MockRepository.GenerateStub<IAppStatusReporting>();
+            appStateStub.Stub(x => x.NotifyAntiSleepingModeIsActivated());
+            appStateStub.Stub(x => x.NotifyAntiSleepingModeIsDisabled());
+
+            var constantDisplayDisabled = new ManualResetEvent(false);
+
+            var preventSleepScreenMock = MockRepository.GenerateMock<IPreventSleepScreen>();
+            preventSleepScreenMock.Expect(x => x.EnableConstantDisplayAndPower(false, false))
+                .Do((Action<bool, bool>)((contantPower, constantScreen) =>
+                {
+                    constantDisplayDisabled.Set();
+                }));
+
+            var soundAnalyserMock = MockRepository.GenerateMock<ISoundAnalyser>();
+            soundAnalyserMock.Expect(x => x.IsProcessNameOutputingSound(Arg<string>.Is.Equal(spotifyProcessName)))
+                .Return(false)
+                .Repeat.Any();
+
+            var mediaSessionDetectorMock = MockRepository.GenerateMock<IMediaSessionDetector>();
+            mediaSessionDetectorMock.Expect(x => x.IsMediaPlaying()).Repeat.Never();
+
+            var facade = new SpotifySaveModeStopperFacade(messageDisplayerStub, preventSleepScreenMock, soundAnalyserMock, processAnalyserStub, appStateStub, null, settingsManagerStub, mediaSessionDetectorMock, 1);
+            facade.StartListening();
+
+            Assert.IsTrue(constantDisplayDisabled.WaitOne(2 * 2 * 1500));
+
+            preventSleepScreenMock.VerifyAllExpectations();
+            soundAnalyserMock.VerifyAllExpectations();
+            mediaSessionDetectorMock.VerifyAllExpectations();
         }
     }
 }
